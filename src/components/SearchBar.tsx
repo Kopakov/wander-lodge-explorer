@@ -10,7 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const SearchBar = () => {
+export type PriceRange = "0-100" | "100-200" | "200-500" | "500+";
+
+interface SearchBarProps {
+  onLocationChange: (location: string) => void;
+  onPriceRangeChange: (range: PriceRange) => void;
+}
+
+export const SearchBar = ({ onLocationChange, onPriceRangeChange }: SearchBarProps) => {
   return (
     <div className="max-w-4xl mx-auto w-full">
       <div className="bg-white p-4 rounded-xl shadow-lg">
@@ -22,12 +29,13 @@ export const SearchBar = () => {
               type="text"
               placeholder="Where are you going?"
               className="mt-1"
+              onChange={(e) => onLocationChange(e.target.value)}
             />
           </div>
           
           <div>
             <Label htmlFor="price">Price Range</Label>
-            <Select>
+            <Select onValueChange={(value: PriceRange) => onPriceRangeChange(value)}>
               <SelectTrigger id="price" className="mt-1">
                 <SelectValue placeholder="Select price range" />
               </SelectTrigger>

@@ -1,7 +1,8 @@
 
-import { Categories } from "@/components/Categories";
+import { Categories, CategoryType } from "@/components/Categories";
 import { PropertyCard } from "@/components/PropertyCard";
-import { SearchBar } from "@/components/SearchBar";
+import { SearchBar, PriceRange } from "@/components/SearchBar";
+import { useState, useMemo } from "react";
 
 const properties = [
   {
@@ -11,6 +12,7 @@ const properties = [
     location: "Malibu, California",
     price: 850,
     rating: 4.98,
+    category: "Beach",
   },
   {
     id: 2,
@@ -19,6 +21,7 @@ const properties = [
     location: "Miami Beach, Florida",
     price: 650,
     rating: 4.95,
+    category: "Beach",
   },
   {
     id: 3,
@@ -27,6 +30,7 @@ const properties = [
     location: "Aspen, Colorado",
     price: 450,
     rating: 4.92,
+    category: "Mountain",
   },
   {
     id: 4,
@@ -35,6 +39,7 @@ const properties = [
     location: "New York City, New York",
     price: 950,
     rating: 4.97,
+    category: "Rooms",
   },
   {
     id: 5,
@@ -43,6 +48,7 @@ const properties = [
     location: "San Francisco, California",
     price: 550,
     rating: 4.90,
+    category: "Rooms",
   },
   {
     id: 6,
@@ -51,10 +57,45 @@ const properties = [
     location: "Charleston, South Carolina",
     price: 380,
     rating: 4.93,
+    category: "Cabin",
   },
 ];
 
 const Index = () => {
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>("All");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
+
+  const filteredProperties = useMemo(() => {
+    return properties.filter((property) => {
+      // Category filter
+      if (selectedCategory !== "All" && property.category !== selectedCategory) {
+        return false;
+      }
+
+      // Location filter
+      if (
+        searchLocation &&
+        !property.location.toLowerCase().includes(searchLocation.toLowerCase())
+      ) {
+        return false;
+      }
+
+      // Price range filter
+      if (priceRange) {
+        const [min, max] = priceRange === "500+" 
+          ? [500, Infinity] 
+          : priceRange.split("-").map(Number);
+        
+        if (property.price < min || property.price > max) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [selectedCategory, searchLocation, priceRange]);
+
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-airbnb-light py-8">
@@ -62,15 +103,18 @@ const Index = () => {
           <h1 className="text-4xl font-bold text-center text-airbnb-dark mb-8 animate-fadeIn">
             Find your next stay
           </h1>
-          <SearchBar />
+          <SearchBar
+            onLocationChange={setSearchLocation}
+            onPriceRangeChange={setPriceRange}
+          />
         </div>
       </header>
       
       <main className="container mx-auto px-4 py-8">
-        <Categories />
+        <Categories onCategoryChange={setSelectedCategory} />
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {properties.map((property) => (
+          {filteredProperties.map((property) => (
             <PropertyCard key={property.id} {...property} />
           ))}
         </div>
