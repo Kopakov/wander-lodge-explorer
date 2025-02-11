@@ -1,18 +1,53 @@
 
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const SearchBar = () => {
   return (
-    <div className="max-w-2xl mx-auto w-full">
-      <div className="relative flex items-center">
-        <input
-          type="text"
-          placeholder="Search destinations..."
-          className="w-full px-6 py-4 rounded-full border border-gray-200 focus:border-airbnb-primary focus:outline-none focus:ring-2 focus:ring-airbnb-primary/20 shadow-sm transition-all duration-300"
-        />
-        <button className="absolute right-4 p-2 rounded-full bg-airbnb-primary text-white hover:bg-airbnb-primary/90 transition-colors">
-          <Search className="w-5 h-5" />
-        </button>
+    <div className="max-w-4xl mx-auto w-full">
+      <div className="bg-white p-4 rounded-xl shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label htmlFor="location">Location</Label>
+            <Input
+              id="location"
+              type="text"
+              placeholder="Where are you going?"
+              className="mt-1"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="price">Price Range</Label>
+            <Select>
+              <SelectTrigger id="price" className="mt-1">
+                <SelectValue placeholder="Select price range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0-100">$0 - $100</SelectItem>
+                <SelectItem value="100-200">$100 - $200</SelectItem>
+                <SelectItem value="200-500">$200 - $500</SelectItem>
+                <SelectItem value="500+">$500+</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="relative">
+            <Label>&nbsp;</Label>
+            <button className="mt-1 w-full px-6 py-2 rounded-lg bg-airbnb-primary text-white hover:bg-airbnb-primary/90 transition-colors flex items-center justify-center gap-2">
+              <Search className="w-5 h-5" />
+              <span>Search</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
